@@ -82,6 +82,35 @@ often.
       (<image :src "https://example.com/woah.png"))))
 ```
 
+## Syntax rationale
+
+The Common Lisp ecosystem has various different solutions for turning
+S-expressions into HTML. Most notable is probably the [CL-WHO][cl-who] family,
+but there is also [YACLML][yaclml] ([syntax description][yaclml-syntax]).
+
+The CL-WHO syntax requires a tradeoff between being aggressive by assuming
+anything in the body that *looks* like `(:tag)` is meant to be a tag (which
+[Spinneret][spinneret] does), and requiring any tags nested inside other code
+to be explicitly wrapped in some form (which [CL-WHO][cl-who] does with its
+`HTM`). Both of these require some level of code walking.
+
+The fact that XML is case-sensitive, unlike HTML, means a CL-WHO-like approach
+would need to either support `("Tags" :like "this")`, or require users to use
+escaped symbols, `(:|Tags| :like "this")`. This makes the aggressive approach
+more overbearing than it already is, and can turn even the conservative
+approach into a bit of a mess.
+
+The [YACLML][yaclml] solution is a bit nicer, since each tag is simply a macro.
+It uses a package named `<` to give tags a distinct look, which also helps make
+things clearer. Pludeck looks more like YACLML than like CL-WHO, though it
+doesn't include a package pre-filled with HTML tags. Instead it uses symbol
+names starting with `<`.
+
+[cl-who]: https://edicl.github.io/cl-who/
+[yaclml]: https://github.com/sharplispers/yaclml
+[yaclml-syntax]: https://trac.common-lisp.net/ucw/wiki/IntroYaclmlTags
+[spinneret]: https://github.com/ruricolist/spinneret
+
 ## Reference
 
 ### `<>root`
