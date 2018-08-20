@@ -17,11 +17,9 @@
 (defun preprocess-body (body)
   "Wrap any element of the body that is not a list in <>text."
   (loop for form in body
-        if (listp form)
-          collect form
-        else
-          collect `(<>text ,form)
-        end))
+        collect (if (listp form)
+                    form
+                    `(<>text ,form))))
 
 (defun parse-attributes (attributes attribute-map-sym)
   "Transform a plist of attributes into a list of calls to SETF, putting those
