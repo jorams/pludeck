@@ -5,6 +5,7 @@
            #:<>wrap
            #:<>
            #:<>text
+           #:<>fulltext
            #:<>define
            #:<?xml
            #:<!--
@@ -99,6 +100,29 @@ CONTENT is passed to PRINC-TO-STRING.
 
 Returns the constructed text node."
   `(plump:make-text-node *parent* (princ-to-string ,content)))
+
+(defmacro <>fulltext (tag/attributes content)
+  "Create a new fulltext node with the closest enclosing element as the parent.
+CONTENT is passed to PRINC-TO-STRING.
+
+A fulltext node is a DOM element that contains text that is not escaped using
+HTML entities. This is primarily useful for <style> and <script> in HTML.
+
+Returns the constructed text node."
+  (let ((tag (if (listp tag/attributes)
+                 (first tag/attributes)
+                 tag/attributes))
+        (attributes (if (listp tag/attributes)
+                        (rest tag/attributes)
+                        ())))
+    `(let ((*parent* (plump:make-fulltext-element
+                      *parent*
+                      ,tag
+                      :text (princ-to-string ,content))))
+       (prog1 *parent*
+         ,(when attributes
+            `(let ((element-attributes (plump:attributes *parent*)))
+               ,@(parse-attributes attributes 'element-attributes)))))))
 
 (defmacro <>define (name tag &key attributes content)
   "Define a macro to simplify construction of a specific type of DOM element.

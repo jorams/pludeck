@@ -159,6 +159,23 @@ Returns the constructed text node."
   ...)
 ```
 
+### `<>fulltext`
+
+Plump also has the construct of a fulltext node, used for `<style>` and
+`<script>` in HTML.
+
+```lisp
+(defmacro <>fulltext (tag/attributes content)
+  "Create a new fulltext node with the closest enclosing element as the parent.
+CONTENT is passed to PRINC-TO-STRING.
+
+A fulltext node is a DOM element that contains text that is not escaped using
+HTML entities. This is primarily useful for <style> and <script> in HTML.
+
+Returns the constructed text node."
+  ...)
+```
+
 ### `<?xml`
 
 There is a special macro for inserting XML header nodes:
